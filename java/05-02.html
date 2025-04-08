@@ -1,0 +1,57 @@
+<!DOCTYPE html> <!-- 修正 DOCTYPE 标签 -->
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- 添加空格增强可读性 -->
+    <title>Document</title>
+    <script>
+        let a = 10
+        const title ='不变的值'
+       // alert(title)
+        let b = '10'
+        console.log(a==b)
+        console.log(a===b)
+        console.log(a + b)
+        console.log(a + Number(b))
+        let age = 18
+        if(age>=14) {
+            console.log('可以吃公家饭了')
+        }else{
+            console.log('不能吃公家饭了') 
+        }
+        function hello(){
+            alert('hello world')
+        }
+        for (let i = 0; i < 9; i++) {
+             console.log(i);
+         // more statements
+        }
+        let hug = 10
+        while (hug > 0) {
+              console.log('继续吃')
+              hug--;
+        }
+        function sayHello() {
+            console.log('Hello, world!');
+        }
+        sayHello();
+        function sayHello2(message) {
+            console.log(message)
+        }
+        sayHello2('Hello, world!')
+        function sayHello3(message) {
+          console.log(message)
+            return message + 'Hello, world!';
+        }
+        sayHello3('Hello, world!')
+        result =sayHello3('Hello, world!')
+        console.log(result)
+    </script>
+  </head>
+ 
+  <body>
+    <p id="demo" onclick="hello()">点击这段文字！</p>
+ </body>
+
+ </html>
+    
