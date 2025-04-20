@@ -1,0 +1,68 @@
+<!DOCTYPE html> <!-- 修正 DOCTYPE 标签 -->
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- 添加空格增强可读性 -->
+    <title>JavaScript 异步编程练习</title>
+  </head>
+  <body>
+    <h1>JavaScript 异步编程练习</h1>
+    <div id="demo">
+        <table id="commitTable" border="1">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>提交日期</th>
+                </tr>
+            </thead>
+            <tbody id="commitBody">
+            </tbody>
+        </table>
+    </div>
+    <script>
+      async function getSomething() {
+            await new Promise(resolve => setTimeout(() => {
+                console.log('111111');
+                resolve();
+            }, 2000));
+          }
+          
+          // 删除 getLastPushedDate 函数，因为它与 getCommitDates 功能重复
+          
+          async function getCommitDates(owner, repo) {
+            const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=100`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                return data.map(commit => commit.commit.committer.date);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
+            }
+          }
+
+          getCommitDates('coriander-star', 'reimagined-enigma').then(dates => {
+              if (dates) {
+                  const tableBody = document.getElementById('commitBody');
+                  tableBody.innerHTML = ''; // 清空现有内容
+                  dates.forEach((date, index) => {
+                      const row = document.createElement('tr');
+                      row.innerHTML = `
+                          <td>第${index + 1}周</td>
+                          <td>${new Date(date).toLocaleString()}</td>
+                      `;
+                      tableBody.appendChild(row);
+                  });
+              }
+          });
+    </script>
+  </body>
+
+  </html>
