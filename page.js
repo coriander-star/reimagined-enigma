@@ -1,73 +1,72 @@
-// 从 GitHub API 获取提交数据（示例仓库：coriander-star/reimagined-enigma）
-async function getCommits() {
-  const response = await fetch(
-    "https://api.github.com/repos/coriander-star/reimagined-enigma/commits",
-    { 
-      next: { revalidate: 3600 },  // 每小时重新验证数据（确保SSR和客户端数据一致）
-      headers: { 'Accept': 'application/vnd.github.v3+json' }  // 指定GitHub API版本
-    }
-  );
-  
-  if (!response.ok) throw new Error("获取提交数据失败");
-  return response.json();
-}
+import Navbar from "./components/Navbar.js";
+import HomeworkCard from "./components/HomeworkCard.js";
 
-export default async function GitHubStatsPage() {
-  try {
-    const commits = await getCommits();
-    // 新增：统计信息
-    const stats = {
-      totalCommits: commits.length,
-      firstCommit: commits[commits.length - 1],
-      lastCommit: commits[0]
-    };
-
-    return (
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
       <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">GitHub 统计</h1>
-        
-        // 新增：统计卡片
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-gray-600 text-sm font-medium">总提交数</h3>
-            <p className="text-2xl font-bold text-indigo-600">{stats.totalCommits}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-gray-600 text-sm font-medium">首次提交</h3>
-            <p className="text-gray-800 font-medium">{new Date(stats.firstCommit.commit.author.date).toLocaleDateString()}</p>
-            <p className="text-gray-600 text-sm">{stats.firstCommit.commit.author.name}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-gray-600 text-sm font-medium">最近提交</h3>
-            <p className="text-gray-800 font-medium">{new Date(stats.lastCommit.commit.author.date).toLocaleDateString()}</p>
-            <p className="text-gray-600 text-sm">{stats.lastCommit.commit.author.name}</p>
-          </div>
+        {/* 页面标题 */}
+        <h1 className="text-2xl font-bold text-rose-700 bg-pink-50 text-center py-4 rounded-lg shadow-md mb-8">
+          Web前端设计开发课程作业
+        </h1>
+
+        {/* 响应式作业列表：手机1列，平板2列，桌面3列 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <HomeworkCard
+            title="HTML语义化实践"
+            content="使用HTML5标签完成博客页面结构，包含header、nav、article等元素"
+            deadline="2025-7-2"
+          />
+          <HomeworkCard
+            title="CSS响应式布局"
+            content="通过媒体查询+Flexbox实现手机/桌面端不同布局效果"
+            deadline="2025-7-2"
+          />
+          <HomeworkCard
+            title="JavaScript交互开发"
+            content="实现图片轮播组件，包含自动播放和手动切换功能"
+            deadline="2025-7-2"
+          />
+           <HomeworkCard
+            title="React基础"
+            content="了解React的基本概念和组件化开发"
+            deadline="2025-7-2"
+          />
+           <HomeworkCard
+            title= "Next.js基础"
+            content="学习Next.js的基本用法和路由配置"
+            deadline="2025-7-2"
+          />
         </div>
-        <div className="space-y-4">
-          {commits.map((commit) => (
-            <div 
-              key={commit.sha}
-              className="bg-white rounded-lg shadow-md p-4 transition-shadow hover:shadow-lg"
-            >
-              <h3 className="text-lg font-medium text-gray-800">
-                {commit.commit.message.split("\n")[0]}
-              </h3>
-              <div className="text-sm text-gray-600 mt-2">
-                作者：{commit.commit.author.name} · 
-                时间：{new Date(commit.commit.author.date).toISOString()} {/* 统一UTC格式 */}
-              </div>
-              <Link 
-                href={`/github-stats/commits/${commit.sha}`}
-                className="text-blue-600 hover:text-blue-800 mt-3 inline-block"
-              >
-                查看详情 →
-              </Link>
+
+        {/* 作业提交表单（含聚焦渐变边框） */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-6">作业提交</h2>
+          <form className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">作业标题</label>
+              <input
+                type="text"
+                placeholder="请输入作业标题"
+                // 聚焦渐变边框：自定义border-image + transition
+                className="mt-1 block w-full rounded-md border-2 border-gray-200 focus:border-rose-500/30 focus:border-gradient-to-r focus:from-rose-500 focus:to-violet-500 transition-colors"
+              />
             </div>
-          ))}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">作业描述</label>
+              <textarea
+                rows="4"
+                placeholder="请输入作业详细描述"
+                className="mt-1 block w-full rounded-md border-2 border-gray-200 focus:border-rose-500/30 focus:border-gradient-to-r focus:from-rose-500 focus:to-violet-500 transition-colors"
+              />
+            </div>
+            <button className="w-full px-4 py-2 bg-rose-600 text-white rounded-md transition-transform hover:scale-105">
+              提交作业
+            </button>
+          </form>
         </div>
       </div>
-    );
-  } catch (error) {
-    return <div className="container mx-auto p-4 text-red-500">{error.message}</div>;
-  }
+    </div>
+  );
 }
