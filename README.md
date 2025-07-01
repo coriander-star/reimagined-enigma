@@ -77,6 +77,7 @@ Next.js项目结构：
 - public/：存放静态资源，如图片等。
 ![TRAE运行界面截图](tupian/Next.js课程练习作业运行截图.png)
 ![TRAE运行界面截图](tupian/Next.js课程练习作业运行截图2.png)
+![TRAE运行界面截图](tupian/GitHub统计页面.png)
 
 旧作业整合方式以及项目运行指南：
 1. 旧作业整合：
