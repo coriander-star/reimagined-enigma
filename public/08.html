@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 异步编程练习 - 优化版</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 标题样式 */
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* 容器样式 */
+        #demo {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        /* 表格样式 */
+        #commitTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        #commitTable th,
+        #commitTable td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        #commitTable th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 500;
+        }
+
+        #commitTable tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        #commitTable tr:hover {
+            background-color: #e8f4fd;
+        }
+
+        /* 加载状态样式 */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        /* 错误提示样式 */
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            background-color: #fadbd8;
+            border-radius: 4px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            #commitTable th,
+            #commitTable td {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub 提交记录</h1>
+    <div id="demo">
+        <div id="loading" class="loading">数据加载中...</div>
+        <div id="error" class="error" style="display: none;">获取数据失败</div>
+        <table id="commitTable" border="0" style="display: none;">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>提交日期</th>
+                </tr>
+            </thead>
+            <tbody id="commitBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // 优化的异步函数 - 添加了错误处理和重试机制
+        async function getCommitDates(owner, repo, retryAttempt = 0) {
+            const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=100`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`网络响应错误: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.map(commit => commit.commit.committer.date);
+            } catch (error) {
+                console.error('获取数据错误:', error);
+
+                // 重试机制 - 最多重试2次
+                if (retryAttempt < 2) {
+                    console.log(`第 ${retryAttempt + 1} 次重试...`);
+                    return getCommitDates(owner, repo, retryAttempt + 1);
+                }
+
+                return null;
+            }
+        }
+
+        // 格式化日期函数
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // 显示数据函数
+        function displayData(dates) {
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error');
+            const tableElement = document.getElementById('commitTable');
+            const tableBody = document.getElementById('commitBody');
+
+            // 隐藏加载状态
+            loadingElement.style.display = 'none';
+
+            if (dates && dates.length > 0) {
+                // 清空现有内容
+                tableBody.innerHTML = '';
+
+                // 添加数据行
+                dates.forEach((date, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>第${index + 1}周</td>
+                        <td>${formatDate(date)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // 显示表格
+                tableElement.style.display = 'table';
+            } else {
+                // 显示错误信息
+                errorElement.style.display = 'block';
+            }
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 调用异步函数获取数据并显示
+            const dates = await getCommitDates('coriander-star', 'reimagined-enigma');
+            displayData(dates);
+        });
+    </script>
+</body>
+</html>
+ 
