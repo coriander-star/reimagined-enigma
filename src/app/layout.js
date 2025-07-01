@@ -1,5 +1,8 @@
+//- 导入Footer组件
+// 在页面底部添加 <Footer /> 标签实现全局展示
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from './components/Footer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +26,17 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <Footer />
+        <script
+          src="https://ai.youdao.com/saas/qanything/js/agent-iframe-min.js"
+          id="qanything-iframe"
+          data-agent-src="https://ai.youdao.com/saas/qanything/#/bots/3A1EAEB3333D4F3B/share"
+          data-default-open="false"
+          data-drag="false"
+          data-open-icon="https://download.ydstatic.com/ead/icon-qanything-iframe-btn.png"
+          data-close-icon="https://download.ydstatic.com/ead/icon-qanything-iframe-btn.png"
+          defer
+        ></script>
       </body>
     </html>
   );

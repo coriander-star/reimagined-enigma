@@ -28,6 +28,16 @@ export default function Home() {
             content="实现图片轮播组件，包含自动播放和手动切换功能"
             deadline="2025-7-2"
           />
+           <HomeworkCard
+            title="React基础"
+            content="了解React的基本概念和组件化开发"
+            deadline="2025-7-2"
+          />
+           <HomeworkCard
+            title= "Next.js基础"
+            content="学习Next.js的基本用法和路由配置"
+            deadline="2025-7-2"
+          />
         </div>
 
         {/* 作业提交表单（含聚焦渐变边框） */}

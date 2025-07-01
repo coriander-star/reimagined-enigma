@@ -1,5 +1,6 @@
 "use client"; // 标记为客户端组件，支持状态管理和事件交互
 import React, { useState } from 'react'; // 引入useState Hook
+import Link from 'next/link'; // 新增：导入Next.js的Link组件
 
 export default function HomeworkCard({ title, content, deadline }) {
   // 声明收藏状态（初始为未收藏）
@@ -29,10 +30,15 @@ export default function HomeworkCard({ title, content, deadline }) {
           >
             {isFavorited ? '❤️ 已收藏' : '🤍 收藏'}
           </button>
-          {/* 原有查看详情按钮 */}
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md transition-transform hover:scale-105">
+          {/* 原有查看详情按钮修改为Link */}
+          <Link 
+            href="https://github.com/coriander-star/reimagined-enigma.git"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md transition-transform hover:scale-105 inline-block"
+          >
             查看详情
-          </button>
+          </Link>
         </div>
       </div>
     </div>
